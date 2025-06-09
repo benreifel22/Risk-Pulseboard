@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Risk Pulseboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <h1>Risk Pulseboard</h1>
+  <div id="container">
+    <div id="chart-area">
+      <canvas id="chart" aria-label="Weekly Impact" role="img"></canvas>
+      <p id="fallback" class="hidden">No data available.</p>
+    </div>
+    <ol id="item-list"></ol>
+  </div>
+<script type="module" src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "risk-pulseboard",
+  "version": "1.0.0",
+  "description": "Risk Pulseboard dashboard",
+  "type": "module",
+  "scripts": {
+    "fetch": "node fetchFeeds.mjs",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "start": "npx serve -s ."
+  },
+  "dependencies": {
+    "chart.js": "^4",
+    "date-fns": "^3",
+    "rss-parser": "^3"
+  },
+  "devDependencies": {
+    "jest": "^29",
+    "jest-environment-jsdom": "^30.0.0-beta.3",
+    "jsdom": "^24"
+  }
+}

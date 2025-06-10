@@ -1,18 +1,21 @@
-async function load(){
+export async function load(){
+  let data;
   try{
-    const res = await fetch('data.json');
-    const data = await res.json();
-    if(!data.weeklyIndex.length){
-      document.getElementById('fallback').classList.remove('hidden');
-      document.getElementById('chart').style.display='none';
-      return;
-    }
-    renderChart(data.weeklyIndex);
-    renderList(data.latestItems);
+    const res = await fetch('./data.json');
+    data = await res.json();
   }catch(e){
-    document.getElementById('fallback').classList.remove('hidden');
-    document.getElementById('chart').style.display='none';
+    data = null;
   }
+
+  if(!data || !data.weeklyIndex || !data.weeklyIndex.length){
+    const p = document.createElement('p');
+    p.textContent = 'No data yet — check back tomorrow.';
+    document.querySelector('h1').insertAdjacentElement('afterend', p);
+    return;
+  }
+
+  renderChart(data.weeklyIndex);
+  renderList(data.latestItems);
 }
 
 function renderChart(weeks){
@@ -44,4 +47,6 @@ function renderList(items){
   });
 }
 
-load();
+if (typeof window !== 'undefined') {
+  window.addEventListener('DOMContentLoaded', load);
+}

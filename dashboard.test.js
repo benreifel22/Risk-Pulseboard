@@ -1,19 +1,33 @@
 import fs from 'fs';
 import { TextEncoder, TextDecoder } from 'util';
-import { createRequire } from 'module';
 
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
-const require = createRequire(import.meta.url);
-const { JSDOM } = require('jsdom');
 
-const html = fs.readFileSync('./index.html','utf8');
+import { load } from './dashboard.js';
 
-test('renders chart or fallback', async () => {
-  const dom = new JSDOM(html, {runScripts:'dangerously', resources:'usable'});
+let html = fs.readFileSync('./index.html','utf8');
+// remove Chart.js script for test environment
+html = html.replace(/<script src="\.\/chart\.umd\.js"><\/script>/,'');
+
+function resetDom(){
+  document.documentElement.innerHTML = html;
+}
+
+test('shows fallback when data missing', async () => {
+  resetDom();
   global.fetch = () => Promise.resolve({json: () => Promise.resolve({weeklyIndex:[], latestItems:[]})});
-  await new Promise(r=>dom.window.addEventListener('load', r));
-  const chart = dom.window.document.getElementById('chart');
-  const fallback = dom.window.document.getElementById('fallback');
-  expect(chart || fallback).toBeTruthy();
+  global.Chart = function(){};
+  await load();
+  const msg = document.querySelector('h1 + p');
+  expect(msg.textContent).toMatch(/No data yet/);
+});
+
+test('renders chart when data present', async () => {
+  resetDom();
+  global.fetch = () => Promise.resolve({json: () => Promise.resolve({weeklyIndex:[{week:'2024-W01', impact:5}], latestItems:[]})});
+  global.Chart = function(){};
+  await load();
+  const canvas = document.getElementById('chart');
+  expect(canvas).toBeTruthy();
 });
